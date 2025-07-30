@@ -8,13 +8,11 @@ function App() {
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
 
-  // ✅ Format selected date to YYYY-MM-DD
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     return date.toISOString().split("T")[0];
   };
 
-  // ✅ Booking handler
   const handleBooking = async () => {
     if (!date) {
       alert("Please select a date!");
@@ -24,7 +22,8 @@ function App() {
     const formattedDate = formatDate(date);
 
     try {
-      const response = await fetch("http://localhost:5500/api/check-availability", {
+      // ✅ Backend URL from Render
+      const response = await fetch("https://trip-booking-ni0w.onrender.com/api/check-availability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date: formattedDate }),
@@ -37,11 +36,11 @@ function App() {
         return;
       }
 
-      const bookRes = await fetch("http://localhost:5500/api/book", {
+      const bookRes = await fetch("https://trip-booking-ni0w.onrender.com/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "TestUser",
+          name: "TestUser", // You can later replace this with real name input
           tripId: selectedTrip.id,
           date: formattedDate,
         }),
@@ -58,16 +57,16 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>TRIP BOOKING.com</h1>
-        <div className="auth-buttons" style={{ textAlign: "right" }}>
+        <h1>Trip Booking App</h1>
+        <div className="auth-buttons">
           <button>Sign In</button>
           <button>Login</button>
         </div>
       </header>
 
-      <AdminPanel />
+      <AdminPanel backendUrl="https://trip-booking-ni0w.onrender.com" />
 
-      {!selectedTrip && <TripList onSelectTrip={setSelectedTrip} />}
+      {!selectedTrip && <TripList onSelectTrip={setSelectedTrip} backendUrl="https://trip-booking-ni0w.onrender.com" />}
 
       {selectedTrip && (
         <div style={{ marginTop: "30px" }}>

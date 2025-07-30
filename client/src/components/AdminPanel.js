@@ -4,7 +4,7 @@ function AdminPanel() {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5500/api/bookings")
+    fetch(`${props.backendUrl}/api/bookings`)
       .then((res) => res.json())
       .then((data) => {
         setBookings(data);

@@ -5,7 +5,7 @@ function TripList({ onSelectTrip }) {
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5500/api/trips")
+    axios.get(`${props.backendUrl}/api/trips`)
       .then(res => {
         console.log("✅ Trips loaded:", res.data);
         setTrips(res.data);
