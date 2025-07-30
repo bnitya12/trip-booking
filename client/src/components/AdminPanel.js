@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-function AdminPanel() {
+function AdminPanel({ backendUrl }) {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
-    fetch(`${props.backendUrl}/api/bookings`)
+    fetch(`${backendUrl}/api/bookings`)
       .then((res) => res.json())
       .then((data) => {
         setBookings(data);
       })
       .catch((err) => console.error("❌ Admin fetch error:", err));
-  }, []);
+  }, [backendUrl]);
 
   return (
     <div>

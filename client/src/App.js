@@ -66,6 +66,7 @@ function App() {
 
       <AdminPanel backendUrl="https://trip-booking-ni0w.onrender.com" />
 
+
       {!selectedTrip && <TripList onSelectTrip={setSelectedTrip} backendUrl="https://trip-booking-ni0w.onrender.com" />}
 
       {selectedTrip && (
