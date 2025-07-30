@@ -1,0 +1,84 @@
+/* styles.css */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 50px;
+}
+
+.trip-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.trip-card h3 {
+  margin: 0;
+  color: #333;
+}
+
+.trip-card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-block;
+  margin: 4px 2px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+input[type="date"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.status-message {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.admin-panel {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.admin-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-panel th, .admin-panel td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.admin-panel th {
+  background-color: #f0f0f0;
+}
