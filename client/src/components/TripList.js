@@ -1,36 +1,45 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 function TripList({ onSelectTrip, backendUrl }) {
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
-    axios.get(`${backendUrl}/api/trips`)
-      .then(res => {
-        console.log("✅ Trips loaded:", res.data);
-        setTrips(res.data);
+    fetch(`${backendUrl}/api/trips`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("✅ Trips loaded:", data);
+        setTrips(data);
       })
-      .catch(err => console.error("❌ API Error:", err));
+      .catch((err) => console.error("❌ API Error:", err));
   }, [backendUrl]);
 
+  const getImage = (title) => {
+    if (title === "Goa") {
+      return "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
+    }
+    if (title === "Gokarna") {
+      return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSPbEKJNHUzfTxkVGuQyCK0Fs_ixywn1EuFA&s";
+    }
+
+    // Optional fallback image
+    return "https://via.placeholder.com/300x200?text=Trip";
+  };
+
   return (
-    <div>
-      <h2>Available Trips</h2>
-      {trips.map(trip => (
+    <div className="trip-grid">
+      {trips.map((trip) => (
         <div
           key={trip.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            marginBottom: "10px",
-            color: "black",
-          }}
+          className="trip-tile"
+          style={{ backgroundImage: `url(${getImage(trip.title)})` }}
         >
-          <h3>{trip.title}</h3>
-          <p>{trip.description}</p>
-          <p>Price: ₹{trip.price}</p>
-          <p>Duration: {trip.duration}</p>
-          <button onClick={() => onSelectTrip(trip)}>Select</button>
+          <div className="overlay">
+            <h3>{trip.title}</h3>
+            <p>{trip.description}</p>
+            <p><strong>Price:</strong> ₹{trip.price}</p>
+            <p><strong>Duration:</strong> {trip.duration}</p>
+            <button onClick={() => onSelectTrip(trip)}>View Details</button>
+          </div>
         </div>
       ))}
     </div>

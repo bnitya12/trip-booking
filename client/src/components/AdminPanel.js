@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function AdminPanel({ backendUrl }) {
+function AdminPanel({ backendUrl, onBack }) {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
@@ -13,8 +13,13 @@ function AdminPanel({ backendUrl }) {
   }, [backendUrl]);
 
   return (
-    <div>
+    <div className="admin-panel" style={{ padding: "20px", background: "#f0f0f0", borderRadius: "10px" }}>
       <h2>📋 Admin Panel – All Bookings</h2>
+
+      <button onClick={onBack} style={{ marginBottom: "20px", background: "#2275e8ff", color: "#fff", padding: "8px 16px", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+        ← Back to Home
+      </button>
+
       {bookings.length === 0 ? (
         <p>No bookings yet.</p>
       ) : (

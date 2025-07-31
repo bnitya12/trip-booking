@@ -23,7 +23,8 @@ const trips = [
     description: "Peaceful beach town with temples and treks",
     price: 1800,
     duration: "4 Days"
-  }
+  },
+  
 ];
 
 const bookings = [];

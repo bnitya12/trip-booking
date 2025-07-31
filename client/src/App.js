@@ -7,13 +7,15 @@ function App() {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
+  const [available, setAvailable] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     return date.toISOString().split("T")[0];
   };
 
-  const handleBooking = async () => {
+  const checkAvailability = async () => {
     if (!date) {
       alert("Please select a date!");
       return;
@@ -22,7 +24,6 @@ function App() {
     const formattedDate = formatDate(date);
 
     try {
-      // ✅ Backend URL from Render
       const response = await fetch("https://trip-booking-ni0w.onrender.com/api/check-availability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,15 +33,32 @@ function App() {
       const result = await response.json();
 
       if (!result.available) {
+        setAvailable(false);
         setStatus("❌ No vans available on selected date. Try another one.");
-        return;
+      } else {
+        setAvailable(true);
+        setStatus("✅ Van available on selected date.");
       }
+    } catch (error) {
+      console.error("Availability check error:", error);
+      setStatus("❌ Something went wrong while checking availability.");
+    }
+  };
 
+  const handleBooking = async () => {
+    if (!available || !date) {
+      alert("Please check availability before booking.");
+      return;
+    }
+
+    const formattedDate = formatDate(date);
+
+    try {
       const bookRes = await fetch("https://trip-booking-ni0w.onrender.com/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "TestUser", // You can later replace this with real name input
+          name: "TestUser",
           tripId: selectedTrip.id,
           date: formattedDate,
         }),
@@ -57,43 +75,75 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>Trip Booking App</h1>
-        <div className="auth-buttons">
+        <h1>✈️ Trip Booking.com</h1>
+        <div className="auth-buttons" style={{ textAlign: "right" }}>
           <button>Sign In</button>
           <button>Login</button>
+          <button onClick={() => setShowAdmin(!showAdmin)}>Admin Login</button>
         </div>
       </header>
 
-      <AdminPanel backendUrl="https://trip-booking-ni0w.onrender.com" />
+      {showAdmin && (
+        <AdminPanel
+          backendUrl="https://trip-booking-ni0w.onrender.com"
+          onBack={() => setShowAdmin(false)}
+        />
+      )}
 
+      {!selectedTrip && !showAdmin && (
+        <TripList
+          onSelectTrip={setSelectedTrip}
+          backendUrl="https://trip-booking-ni0w.onrender.com"
+        />
+      )}
 
-      {!selectedTrip && <TripList onSelectTrip={setSelectedTrip} backendUrl="https://trip-booking-ni0w.onrender.com" />}
-
-      {selectedTrip && (
-        <div style={{ marginTop: "30px" }}>
+      {selectedTrip && !showAdmin && (
+        <div className="booking-card">
           <h2>Booking: {selectedTrip.title}</h2>
 
-          <label>Select Date: </label>
+          <label>Select Date:</label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            style={{ marginBottom: "10px" }}
           />
-          <br />
-          <button onClick={handleBooking} style={{ padding: "8px 16px" }}>
-            Check Availability & Book
-          </button>
+
+          <div className="booking-buttons">
+            <button onClick={checkAvailability}>Check Availability</button>
+            <button onClick={handleBooking}>Book Now</button>
+          </div>
 
           <p className="status-message">{status}</p>
+
+          <div className="booking-plan">
+            <h3>Itinerary:</h3>
+            <ul>
+              {selectedTrip.title === "Goa" && (
+                <>
+                  <li><strong>Day 1:</strong> Arrival and Beach Exploration</li>
+                  <li><strong>Day 2:</strong> Water Sports and Cruise Dinner</li>
+                  <li><strong>Day 3:</strong> Old Goa Churches & Departure</li>
+                </>
+              )}
+              {selectedTrip.title === "Gokarna" && (
+                <>
+                  <li><strong>Day 1:</strong> Temple Visit</li>
+                  <li><strong>Day 2:</strong> Beach Hike & Sunset</li>
+                  <li><strong>Day 3:</strong> Trek to Paradise Beach</li>
+                  <li><strong>Day 4:</strong> Local Exploration</li>
+                </>
+              )}
+              
+            </ul>
+          </div>
 
           <button
             onClick={() => {
               setSelectedTrip(null);
               setDate("");
               setStatus("");
+              setAvailable(false);
             }}
-            style={{ marginTop: "10px" }}
           >
             ← Back
           </button>
