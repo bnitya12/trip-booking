@@ -8,6 +8,7 @@ function App() {
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
   const [available, setAvailable] = useState(false);
+  const [showPaymentButton, setShowPaymentButton] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
 
   const formatDate = (inputDate) => {
@@ -34,10 +35,12 @@ function App() {
 
       if (!result.available) {
         setAvailable(false);
+        setShowPaymentButton(false);
         setStatus("❌ No vans available on selected date. Try another one.");
       } else {
         setAvailable(true);
-        setStatus("✅ Van available on selected date.");
+        setShowPaymentButton(true);
+        setStatus("✅ Van available on selected date. Click Proceed to Pay.");
       }
     } catch (error) {
       console.error("Availability check error:", error);
@@ -66,6 +69,7 @@ function App() {
 
       const bookResult = await bookRes.json();
       setStatus(`✅ ${bookResult.message}`);
+      setShowPaymentButton(false);
     } catch (error) {
       console.error("Booking error:", error);
       setStatus("❌ Something went wrong. Please try again.");
@@ -74,14 +78,29 @@ function App() {
 
   return (
     <div className="app-container">
-      <header className="app-header">
-        <h1>✈️ Trip Booking.com</h1>
-        <div className="auth-buttons" style={{ textAlign: "right" }}>
+      <header className="app-header custom-header">
+        <div className="header-left">
+          
+            <img src="/logo.png" alt="Trip Booking Logo" className="header-logo" />
+         
+        </div>
+        <div className="auth-buttons">
           <button>Sign In</button>
           <button>Login</button>
           <button onClick={() => setShowAdmin(!showAdmin)}>Admin Login</button>
         </div>
       </header>
+
+      {/* Banner Search Section */}
+      <section className="trip-search-section">
+        <div className="trip-search-banner">
+          <div className="trip-search-card">
+            <input type="text" placeholder="From" className="trip-input" />
+            <input type="text" placeholder="To" className="trip-input" />
+            <button className="trip-search-btn">Search Trips</button>
+          </div>
+        </div>
+      </section>
 
       {showAdmin && (
         <AdminPanel
@@ -109,8 +128,20 @@ function App() {
           />
 
           <div className="booking-buttons">
-            <button onClick={checkAvailability}>Check Availability</button>
-            <button onClick={handleBooking}>Book Now</button>
+            {!available && (
+              <button onClick={checkAvailability}>Check Availability</button>
+              
+            )}
+
+            {available && showPaymentButton && !status.includes("💳 Proceed to Pay") && (
+              <button onClick={() => setStatus(`💳 Proceed to Pay ₹${selectedTrip.price}`)}>
+                Proceed to Pay
+              </button>
+            )}
+
+            {status.includes("💳 Proceed to Pay") && (
+              <button onClick={handleBooking}>💰 Pay & Book Now</button>
+            )}
           </div>
 
           <p className="status-message">{status}</p>
@@ -133,7 +164,6 @@ function App() {
                   <li><strong>Day 4:</strong> Local Exploration</li>
                 </>
               )}
-              
             </ul>
           </div>
 
@@ -143,6 +173,7 @@ function App() {
               setDate("");
               setStatus("");
               setAvailable(false);
+              setShowPaymentButton(false);
             }}
           >
             ← Back
